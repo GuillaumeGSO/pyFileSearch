@@ -1,0 +1,4 @@
+.vscode
+*.pbz2
+__pycache__
+pyfileindexer/
