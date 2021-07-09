@@ -1,5 +1,5 @@
-# pyFileIndexer
-Simple tool to index filenames on a directory and search tool
+# pyFileSearch
+Simple tool to search from filename using a file index made by pyFileIndexer
 
 My comments in french for a fresh start
 - [ ] TODO : everything in english

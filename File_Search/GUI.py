@@ -1,12 +1,11 @@
 import PySimpleGUI as sg
-from File_dir.file_parser import findFilesInSet, read_index_file
+from File_Search.file_parser import findFilesInSet
 import os, sys
 import asyncio
 
 __SEARCHING__ = False
 __INTERRUPT__ = False
 lst = list()
-my_set = read_index_file("index")
 layout = [
     [sg.InputText(key="-INPUT-", enable_events=True),
      sg.Text(len(lst), size=(10, 1), key="-NB-")],
@@ -15,14 +14,20 @@ layout = [
     [sg.Exit()]
 ]
 
-window = sg.Window('Py Simple Indexer', layout, finalize=True)
+def merge_nested_if(a, b):
+    if a:
+        if b:
+            return 2
 
-async def wait_list():
-    await asyncio.wait([background(), ui()])
 
-def construct_interface():
+window = sg.Window('Py Simple Search', layout, finalize=True)
+
+async def wait_list(my_set):
+    await asyncio.wait([background(my_set), ui()])
+
+def construct_interface(my_set):
     loop = asyncio.get_event_loop()
-    loop.run_until_complete(wait_list())
+    loop.run_until_complete(wait_list(my_set))
     loop.close()
 
 
@@ -53,7 +58,7 @@ async def ui():
         await asyncio.sleep(0)
 
 
-async def background():
+async def background(my_set):
     search = ''
     while True:
         if window['-INPUT-'].get() != search:
@@ -62,7 +67,7 @@ async def background():
             lst.clear()
             window['-NB-'].update(0)
             i = 0
-            for r in findFilesInSet(my_set, search):
+            for r in findFilesInSet(my_set,search):
                 i += 1
                 lst.append(r)
                 global __SEARCHING__
