@@ -17,8 +17,9 @@ def main():
 
     Usage :
 
-    ***** Mode recherche : 2 paramètres obligatoires *****
-    -i ou --index <indexfilename> : utilise le fichier d'index <indexfilename> (obligatoire)
+    ***** Search mode : 1 optional parameter
+    -i ou --index <indexfilename> : utilise le fichier d'index <indexfilename>
+    "index" will be used if not specified
     '''
     
     INDEX_FILE_NAME = 'index'
@@ -40,7 +41,7 @@ def main():
         if current_argument in ("-i", "--index"):
             INDEX_FILE_NAME = current_value
     
-    #Read the index
+    #Read the index file
     try:
         my_set = read_index_file(INDEX_FILE_NAME)
     except:
@@ -48,6 +49,6 @@ def main():
         sys.exit(2)
 
 
-    # Lauch GUI
+    # Launch GUI
     construct_interface(my_set)
     sys.exit(1)
