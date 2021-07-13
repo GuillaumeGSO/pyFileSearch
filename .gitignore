@@ -2,3 +2,5 @@
 *.pbz2
 __pycache__
 pyfileindexer/
+dist/
+build/
