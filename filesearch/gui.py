@@ -5,7 +5,7 @@ import os
 import sys
 import asyncio
 import PySimpleGUI as sg
-from File_Search.file_parser import findFilesInSet
+from filesearch.file_parser import find_files_in_set
 
 __SEARCHING__ = False
 __INTERRUPT__ = False
@@ -78,7 +78,7 @@ async def background(my_set):
             lst.clear()
             window['-NB-'].update(0)
             i = 0
-            for item in findFilesInSet(my_set,search):
+            for item in find_files_in_set(my_set,search):
                 i += 1
                 lst.append(item)
                 global __SEARCHING__

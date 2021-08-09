@@ -1,9 +1,15 @@
+"""
+parsing of the index file content
+"""
 import os
 import pickle
 import bz2
 import fnmatch
 
-def findFilesInSet(my_set, my_search):
+def find_files_in_set(my_set, my_search):
+    """
+    generates results with wildcards
+    """
     for item in my_set:
         # File Name match : permet d'utiliser des * ou ? (plus simple que des regexp)
         # For now it is case sensitive
@@ -12,6 +18,9 @@ def findFilesInSet(my_set, my_search):
 
 
 def read_index_file(my_index_file):
+    """
+    Read the given index files (made with pyFileIndexer)
+    """
     trace(f'Uncompressing & Reading index file : {my_index_file}')
     data = bz2.BZ2File(my_index_file + '.pbz2', 'rb')
     myset = pickle.load(data)
@@ -19,4 +28,7 @@ def read_index_file(my_index_file):
     return myset
 
 def trace(trc):
+    """
+    logging
+    """
     print(trc)
