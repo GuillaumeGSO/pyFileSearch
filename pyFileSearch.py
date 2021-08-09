@@ -1,5 +1,5 @@
 """
-main
+run this file to launch
 """
 from filesearch import main
 
