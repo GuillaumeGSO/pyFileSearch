@@ -4,7 +4,7 @@
 block_cipher = None
 
 
-a = Analysis(['pyFileSearch.py'],
+a = Analysis(['pyfilesearch.py'],
              pathex=['C:\\JTB\\projets\\python\\pyFileSearch'],
              binaries=[],
              datas=[],
