@@ -45,10 +45,9 @@ def main():
     #Read the index file
     try:
         my_set = read_index_file(index_filename)
-    except:
-        print("Unable to read index file")
+    except FileNotFoundError:
+        print("Unable to find index file")
         sys.exit(2)
-
 
     # Launch GUI
     construct_interface(my_set)

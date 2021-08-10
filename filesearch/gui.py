@@ -34,7 +34,6 @@ def construct_interface(my_set):
     loop = asyncio.get_event_loop()
     loop.run_until_complete(wait_list(my_set))
     loop.close()
-
             
 async def handle_ui():
     """
