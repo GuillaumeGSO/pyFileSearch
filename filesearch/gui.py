@@ -3,6 +3,7 @@ Graphical User Interface implemented with PySimpleGUI
 """
 import os
 import sys
+import subprocess
 import asyncio
 import PySimpleGUI as sg
 from filesearch.file_parser import find_files_in_set
@@ -35,6 +36,15 @@ def construct_interface(my_set):
     loop.run_until_complete(wait_list(my_set))
     loop.close()
 
+def open_file(filename):
+    """
+    Handling other systems
+    """
+    if sys.platform == "win32":
+        os.startfile(filename)
+    else:
+        opener = "open" if sys.platform == "darwin" else "xdg-open"
+        subprocess.call([opener, filename])
 
 async def handle_ui():
     """
@@ -58,7 +68,7 @@ async def handle_ui():
             file_clicked = values['-RESULT-'][0]
             if __SEARCHING__:
                 __INTERRUPT__ = True
-            os.startfile(file_clicked)
+            open_file(file_clicked)
         elif event == '__TIMEOUT__':
             pass
         else:
