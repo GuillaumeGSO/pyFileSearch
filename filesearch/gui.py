@@ -16,27 +16,13 @@ layout = [
     [sg.Exit()]
 ]
 
-
 window = sg.Window('Py Simple Search', layout, finalize=True)
-
-
-class SearchState:
-    """
-    Handle searching and interrupting
-    """
-    searching = False
-    interrupting = False
-
-    def __init__(self):
-        self.searching = False
-        self.interrupting = False
-
 
 async def wait_list(my_set):
     """
     builds task list for asynIO
     """
-    search_state = SearchState()
+    search_state = {'searching' : False, "interrupting" : False}
     await asyncio.wait([background(my_set, search_state), handle_ui(search_state)])
 
 
@@ -63,12 +49,12 @@ async def handle_ui(search_state):
             if last_search != values['-INPUT-']:
                 window['-RESULT-'].update([])
                 last_search = values['-INPUT-']
-                if search_state.searching:
-                    search_state.interrupting = True
+                if search_state['searching']:
+                    search_state['interrupting'] = True
         elif event == '-RESULT-':
             file_clicked = values['-RESULT-'][0]
-            if search_state.searching:
-                search_state.interrupting = True
+            if search_state['searching']:
+                search_state['interrupting'] = True
             os.startfile(file_clicked)
         elif event == '__TIMEOUT__':
             pass
@@ -85,23 +71,23 @@ async def background(my_set, search_state):
     while True:
         if window['-INPUT-'].get() != search:
             search = window['-INPUT-'].get()
-            print(search)
+            #print(search)
             lst.clear()
             window['-NB-'].update(0)
             i = 0
             for item in find_files_in_set(my_set, search):
                 i += 1
                 lst.append(item)
-                if search_state.searching and search_state.interrupting:
-                    search_state.interrupting = False
+                if search_state['searching'] and search_state['interrupting']:
+                    search_state['interrupting'] = False
                     break
-                search_state.searching = True
+                search_state['searching'] = True
                 if i % 100 == 0:
                     window['-RESULT-'].update(lst)
                     window['-NB-'].update(len(lst))
                 await asyncio.sleep(0)
-            search_state.searching = False
-            search_state.interrupting = False
+            search_state['searching'] = False
+            search_state['interrupting'] = False
             window['-RESULT-'].update(lst)
             window['-NB-'].update(len(lst))
         await asyncio.sleep(0.001)
