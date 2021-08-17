@@ -20,5 +20,4 @@ jobs:
         pip install pylint
     - name: Analysing the code with pylint
       run: |
-        #python -m pylint ./filesearch --exit-zero
         python -m pylint ./filesearch

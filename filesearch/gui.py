@@ -7,8 +7,6 @@ import asyncio
 import PySimpleGUI as sg
 from filesearch.file_parser import find_files_in_set
 
-__SEARCHING__ = False
-__INTERRUPT__ = False
 lst = list()
 layout = [
     [sg.InputText(key="-INPUT-", enable_events=True),
@@ -21,11 +19,26 @@ layout = [
 
 window = sg.Window('Py Simple Search', layout, finalize=True)
 
+
+class SearchState:
+    """
+    Handle searching and interrupting
+    """
+    searching = False
+    interrupting = False
+
+    def __init__(self):
+        self.searching = False
+        self.interrupting = False
+
+
 async def wait_list(my_set):
     """
     builds task list for asynIO
     """
-    await asyncio.wait([background(my_set), handle_ui()])
+    search_state = SearchState()
+    await asyncio.wait([background(my_set, search_state), handle_ui(search_state)])
+
 
 def construct_interface(my_set):
     """
@@ -35,13 +48,12 @@ def construct_interface(my_set):
     loop.run_until_complete(wait_list(my_set))
     loop.close()
 
-async def handle_ui():
+
+async def handle_ui(search_state):
     """
     UI build and handling
     """
     last_search = ''
-    global __INTERRUPT__
-    global __SEARCHING__
     # Event Loop to process "events"
     while True:
         event, values = window.read(timeout=1)
@@ -51,12 +63,12 @@ async def handle_ui():
             if last_search != values['-INPUT-']:
                 window['-RESULT-'].update([])
                 last_search = values['-INPUT-']
-                if __SEARCHING__:
-                    __INTERRUPT__ = True
+                if search_state.searching:
+                    search_state.interrupting = True
         elif event == '-RESULT-':
             file_clicked = values['-RESULT-'][0]
-            if __SEARCHING__:
-                __INTERRUPT__ = True
+            if search_state.searching:
+                search_state.interrupting = True
             os.startfile(file_clicked)
         elif event == '__TIMEOUT__':
             pass
@@ -65,7 +77,7 @@ async def handle_ui():
         await asyncio.sleep(0)
 
 
-async def background(my_set):
+async def background(my_set, search_state):
     """
     background task (search) and interuption handling
     """
@@ -77,21 +89,19 @@ async def background(my_set):
             lst.clear()
             window['-NB-'].update(0)
             i = 0
-            for item in find_files_in_set(my_set,search):
+            for item in find_files_in_set(my_set, search):
                 i += 1
                 lst.append(item)
-                global __SEARCHING__
-                global __INTERRUPT__
-                if __SEARCHING__ and __INTERRUPT__:
-                    __INTERRUPT__ = False
+                if search_state.searching and search_state.interrupting:
+                    search_state.interrupting = False
                     break
-                __SEARCHING__ = True
+                search_state.searching = True
                 if i % 100 == 0:
                     window['-RESULT-'].update(lst)
                     window['-NB-'].update(len(lst))
                 await asyncio.sleep(0)
-            __SEARCHING__ = False
-            __INTERRUPT__= False
+            search_state.searching = False
+            search_state.interrupting = False
             window['-RESULT-'].update(lst)
             window['-NB-'].update(len(lst))
         await asyncio.sleep(0.001)
