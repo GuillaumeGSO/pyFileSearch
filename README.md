@@ -17,9 +17,10 @@ install pyinstaller with the command :
 
 build the executable:
  * pyinstaller ./pyFileSearch.py --onefile -w
- Options : 
-       - onefile : generates only one .exe executable file with all included
-       - w : hide the console window at run time 
+       
+ Options :
+       onefile -> generates only one .exe executable file with all included
+       w -> hide the console window at run time 
  * or use the pyFileSearch.spec
 ## Use the executable
 Do not forget to copy the index file (index.pbz2) next to the executable file
